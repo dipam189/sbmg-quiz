@@ -3,209 +3,507 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SBM-G Assessment</title>
-
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
-
+<title>SBM-G Knowledge Assessment · Assam PHED</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
 <style>
 :root{
---bg:#0c0f1a;--card:#141828;--border:#252d45;
---text:#dde3f4;--muted:#7c86a2;--accent:#5b8dee;
---green:#22c55e;--red:#ef4444;--gold:#f59e0b;
+  --bg:#0c0f1a;--surface:#141828;--surface2:#1a1f30;--border:#252d45;
+  --text:#dde3f4;--muted:#5c6580;--accent:#5b8dee;
+  --green:#25d07a;--green-bg:rgba(37,208,122,.10);--green-bd:rgba(37,208,122,.38);
+  --red:#f05252;--red-bg:rgba(240,82,82,.10);--red-bd:rgba(240,82,82,.38);
+  --gold:#f4a22d;--orange:#fb923c;
 }
-body{margin:0;background:var(--bg);color:var(--text);font-family:'DM Sans';display:flex;justify-content:center}
-.container{max-width:700px;width:100%;padding:20px}
-.card{background:var(--card);padding:20px;border-radius:16px;border:1px solid var(--border);margin-top:20px}
-.hidden{display:none}
-h1,h2{font-family:'DM Serif Display'}
-input{width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:#1a1f30;color:#fff}
-button{padding:10px;border:none;border-radius:10px;background:var(--accent);color:#fff;cursor:pointer;margin-top:10px}
-.opt{padding:10px;border:1px solid var(--border);margin-top:6px;border-radius:10px;cursor:pointer}
-.opt:hover{border-color:var(--accent)}
-.selected{background:#1f2a4a;border-color:var(--accent)}
-.correct{background:#163a2a;border-color:var(--green)}
-.wrong{background:#3a1616;border-color:var(--red)}
-.top{display:flex;justify-content:space-between;font-size:14px;color:var(--muted)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0 1rem 3rem}
+.screen{width:100%;max-width:680px;position:relative;z-index:1}
+.hidden{display:none!important}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fadein{animation:fadeUp .3s ease}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.015)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* ── SHARED COMPONENTS ── */
+.gov-tag{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border:1px solid var(--border);padding:4px 14px;border-radius:20px;margin-bottom:1rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:2rem}
+.card h3{font-size:15px;font-weight:500;margin-bottom:1.2rem;color:#fff;text-align:center}
+.field{margin-bottom:1rem}
+.field label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.4rem}
+.field input,.field select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.65rem .9rem;font-size:14px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;-webkit-appearance:none}
+.field input:focus,.field select:focus{border-color:var(--accent)}
+.field select option{background:var(--surface2)}
+.btn{width:100%;padding:.75rem;border-radius:12px;border:none;background:var(--accent);color:#fff;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:opacity .15s;margin-top:.5rem}
+.btn:hover{opacity:.88}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.sec{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.btn.sec:hover{border-color:var(--accent);color:var(--text);opacity:1}
+.btn.danger{background:var(--red-bg);border:1px solid var(--red-bd);color:var(--red)}
+.err{font-size:12px;color:var(--red);margin-top:.6rem;display:none;text-align:center}
+
+/* ── REGISTER ── */
+#scr-register{padding:3rem 0 2rem;text-align:center}
+.big-title{font-family:'DM Serif Display',serif;font-size:clamp(24px,5vw,38px);color:#fff;margin-bottom:.5rem;line-height:1.2}
+.sub{font-size:13px;color:var(--muted);margin-bottom:2rem;line-height:1.6}
+
+/* ── QUIZ ── */
+#scr-quiz{padding:1.5rem 0}
+.quiz-header{text-align:center;margin-bottom:1.4rem}
+.quiz-header h2{font-family:'DM Serif Display',serif;font-size:20px;color:#fff}
+.quiz-header p{font-size:11.5px;color:var(--muted);margin-top:.3rem}
+.prog-wrap{margin-bottom:1.2rem}
+.prog-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:5px}
+.prog-track{height:4px;background:var(--surface2);border-radius:2px}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:2px;transition:width .35s ease}
+.qcard{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:1.6rem;margin-bottom:1rem;transition:border-color .2s}
+.qcard.ok{border-color:var(--green-bd)}
+.qcard.bad{border-color:var(--red-bd)}
+.qmeta{display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;flex-wrap:wrap;gap:.4rem}
+.qno{font-size:11px;color:var(--muted)}
+.trap-tag{font-size:9.5px;color:var(--orange);background:rgba(251,146,60,.09);border:1px solid rgba(251,146,60,.22);padding:2px 8px;border-radius:8px}
+.qtext{font-family:'DM Serif Display',serif;font-size:15.5px;line-height:1.65;color:#fff;margin-bottom:1.1rem;white-space:pre-line}
+.opts{display:flex;flex-direction:column;gap:.5rem}
+.opt{padding:.7rem .95rem;border-radius:11px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:13px;color:var(--text);line-height:1.5;transition:all .14s;display:flex;align-items:flex-start;gap:.65rem;user-select:none}
+.opt:hover:not(.locked){border-color:var(--accent);background:rgba(91,141,238,.07);transform:translateX(3px)}
+.opt.locked{cursor:default}
+.letter{width:22px;height:22px;min-width:22px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:600;color:var(--muted);transition:all .15s;margin-top:1px;flex-shrink:0}
+.opt-text{flex:1;font-size:13px}
+.opt.selected{border-color:var(--accent);background:rgba(91,141,238,.12)}
+.opt.selected .letter{background:var(--accent);border-color:var(--accent);color:#fff}
+.opt.selected .opt-text{color:var(--text)}
+.opt.correct{border-color:var(--green-bd);background:var(--green-bg)}
+.opt.correct .letter{background:var(--green);border-color:var(--green);color:#000}
+.opt.correct .opt-text{color:var(--green)}
+.opt.wrong{border-color:var(--red-bd);background:var(--red-bg)}
+.opt.wrong .letter{background:var(--red);border-color:var(--red);color:#fff}
+.opt.wrong .opt-text{color:var(--red)}
+.opt.show-ans{border-color:var(--green-bd);background:rgba(37,208,122,.04);opacity:.6}
+.opt.show-ans .letter{background:var(--green);border-color:var(--green);color:#000}
+.opt.show-ans .opt-text{color:var(--green)}
+.expl{margin-top:.8rem;padding:.7rem .9rem;background:rgba(91,141,238,.06);border:1px solid rgba(91,141,238,.18);border-radius:10px;font-size:12px;color:#9aaac8;line-height:1.6;display:none}
+.expl.show{display:block}
+.expl strong{color:var(--accent)}
+.nav-row{display:flex;gap:.75rem;margin-top:1.2rem}
+.nav-btn{flex:1;padding:.65rem;border-radius:11px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .15s}
+.nav-btn:hover:not(:disabled){border-color:var(--accent);color:var(--text)}
+.nav-btn:disabled{opacity:.3;cursor:default}
+.nav-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.nav-btn.primary:hover{opacity:.88}
+.status-bar{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.75rem 1.1rem;margin-top:.9rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+.status-bar span{font-size:12.5px;color:var(--muted)}
+.status-bar strong{color:var(--text)}
+
+/* ── RESULT ── */
+#scr-result{padding:2.5rem 0;text-align:center}
+.result-emoji{font-size:64px;display:block;margin-bottom:1rem}
+.result-title{font-family:'DM Serif Display',serif;font-size:30px;color:#fff;margin-bottom:.4rem}
+.result-pct{font-size:64px;font-weight:700;font-family:'DM Serif Display',serif;margin-bottom:.3rem;line-height:1}
+.result-sub{font-size:13px;color:var(--muted);margin-bottom:1.5rem}
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem;margin-bottom:1.5rem}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.9rem 1rem;text-align:left}
+.stat-box .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.2rem}
+.stat-box .val{font-size:22px;font-weight:600;font-family:'DM Serif Display',serif}
+.save-note{font-size:12px;color:var(--muted);margin-bottom:1.2rem;padding:.6rem;background:var(--surface);border-radius:10px;border:1px solid var(--border)}
+.review-area{margin-top:1.5rem;text-align:left}
+.review-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.2rem;margin-bottom:.75rem}
+
+/* ── ADMIN LOGIN ── */
+#scr-adminlogin{padding:4rem 0;max-width:380px;margin:0 auto}
+
+/* ── ADMIN DASHBOARD ── */
+#scr-admin{padding:2rem 0}
+.dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:.6rem}
+.dash-header h2{font-family:'DM Serif Display',serif;font-size:26px;color:#fff}
+.dash-btns{display:flex;gap:.5rem}
+.icon-btn{padding:.45rem 1rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .15s}
+.icon-btn:hover{border-color:var(--accent);color:var(--text)}
+.icon-btn.danger{border-color:var(--red-bd);background:var(--red-bg);color:var(--red)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1.5rem}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1rem 1.1rem}
+.kpi .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.2rem}
+.kpi .val{font-size:26px;font-weight:600;font-family:'DM Serif Display',serif;color:#fff}
+.section-label{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:.6rem}
+.band-row{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.2rem;margin-bottom:.55rem}
+.band-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.45rem}
+.band-name{font-size:13px;color:var(--text)}
+.band-pct{font-size:13px;font-weight:600}
+.bar-track{height:7px;background:var(--surface2);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;transition:width .7s ease}
+.p-table-wrap{overflow-x:auto;margin-top:1.2rem}
+table.ptable{width:100%;border-collapse:collapse;font-size:13px}
+table.ptable th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);padding:.55rem .75rem;border-bottom:1px solid var(--border)}
+table.ptable td{padding:.55rem .75rem;border-bottom:1px solid rgba(37,45,69,.5);color:var(--text)}
+table.ptable tr:last-child td{border-bottom:none}
+table.ptable tr:hover td{background:rgba(255,255,255,.02)}
+.sbadge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11.5px;font-weight:600}
+.s-a{background:rgba(37,208,122,.15);color:var(--green)}
+.s-b{background:rgba(91,141,238,.15);color:#7eb4fa}
+.s-c{background:rgba(244,162,45,.15);color:var(--gold)}
+.s-d{background:rgba(240,82,82,.15);color:var(--red)}
+.no-data{text-align:center;padding:2.5rem;color:var(--muted);font-size:13px}
 </style>
 </head>
-
 <body>
-<div class="container">
 
-<!-- REGISTER -->
-<div id="register" class="card">
-<h2>SBM-G Knowledge Assessment</h2>
-<input id="name" placeholder="Enter your name"/>
-<button onclick="start()">Start</button>
+<!-- ══ REGISTER ══ -->
+<div id="scr-register" class="screen fadein">
+  <div style="padding:3rem 0 2rem;text-align:center">
+    <div class="gov-tag">Government of Assam · PHED · SBM-G Phase II</div>
+    <h1 class="big-title">Knowledge Assessment</h1>
+    <p class="sub">25 questions · 20 minutes<br>Read each option carefully. Green = correct, Red = incorrect.</p>
+  </div>
+  <div class="card">
+    <h3>Enter your details to begin</h3>
+    <div class="field"><label>Nickname / Any name of your choice *</label><input id="r-name" type="text" placeholder="Enter any name" autocomplete="off"/></div>
+
+
+    <p class="err" id="reg-err">Please fill in all required fields.</p>
+    <button class="btn" onclick="startQuiz()">Start Assessment →</button>
+    <button class="btn sec" style="margin-top:.6rem" onclick="showAdminLogin()">🔒 Admin Dashboard</button>
+  </div>
 </div>
 
-<!-- QUIZ -->
-<div id="quiz" class="card hidden">
-<div class="top">
-<span id="progress"></span>
-<span id="timer"></span>
-</div>
-<h3 id="question"></h3>
-<div id="options"></div>
-<button onclick="prev()">Prev</button>
-<button onclick="next()">Next</button>
-</div>
-
-<!-- RESULT -->
-<div id="result" class="card hidden">
-<h2 id="score"></h2>
-<button onclick="location.reload()">Restart</button>
+<!-- ══ ADMIN LOGIN ══ -->
+<div id="scr-adminlogin" class="screen hidden">
+  <div class="card">
+    <h3 style="margin-bottom:1.5rem">Admin Access</h3>
+    <div class="field"><label>Password</label><input id="adm-pw" type="password" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')adminLogin()"/></div>
+    <p class="err" id="adm-err">Incorrect password.</p>
+    <button class="btn" onclick="adminLogin()">Access Dashboard</button>
+    <button class="btn sec" onclick="show('scr-register')" style="margin-top:.5rem">← Back</button>
+  </div>
 </div>
 
-<!-- ADMIN -->
-<div id="admin" class="card hidden">
-<h3>Admin Dashboard</h3>
-<button onclick="exportCSV()">Export CSV</button>
-<button onclick="clearData()">Clear</button>
-<div id="data"></div>
+<!-- ══ QUIZ ══ -->
+<div id="scr-quiz" class="screen hidden">
+  <div class="quiz-header">
+    <h2>SBM-G Phase II · Knowledge Assessment</h2>
+    <p id="quiz-who"></p>
+  </div>
+  <div class="prog-wrap">
+    <div class="prog-meta"><span id="prog-lbl">Question 1 of 50</span><span id="prog-pct">2%</span></div>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:2%"></div></div>
+  </div>
+  <div id="q-area"></div>
+  <div class="nav-row">
+    <button class="nav-btn" id="btn-prev" onclick="go(-1)" disabled>← Prev</button>
+    <button class="nav-btn" id="btn-next" onclick="go(1)">Next →</button>
+    <button class="nav-btn primary hidden" id="btn-sub" onclick="confirmSub()">Submit ✓</button>
+  </div>
+  <div class="status-bar">
+    <span>Answered: <strong id="ans-cnt">0</strong> / 25 &nbsp;|&nbsp; <span id="unanswered-note" style="color:var(--gold)">50 remaining</span></span>
+    <span id="timer" style="font-weight:600">⏱ 20:00</span>
+  </div>
 </div>
 
+<!-- ══ RESULT ══ -->
+<div id="scr-result" class="screen hidden">
+  <span class="result-emoji" id="r-emoji"></span>
+  <div class="result-title" id="r-title"></div>
+  <div class="result-pct" id="r-pct"></div>
+  <div class="result-sub" id="r-sub"></div>
+  <div class="stats-grid">
+    <div class="stat-box"><div class="lbl">Correct</div><div class="val" id="r-cor" style="color:var(--green)"></div></div>
+    <div class="stat-box"><div class="lbl">Incorrect</div><div class="val" id="r-wrg" style="color:var(--red)"></div></div>
+    <div class="stat-box"><div class="lbl">Not Answered</div><div class="val" id="r-blk" style="color:var(--muted)"></div></div>
+    <div class="stat-box"><div class="lbl">Time Taken</div><div class="val" id="r-tim" style="color:var(--gold)"></div></div>
+  </div>
+  <div class="save-note" id="save-note">💾 Saving result...</div>
+  <button class="btn" onclick="toggleReview()" id="rev-btn" style="margin-bottom:.75rem">📋 Review All Answers</button>
+  <button class="btn sec" onclick="location.reload()">Take Again</button>
+  <div class="review-area hidden" id="rev-area"></div>
+</div>
+
+<!-- ══ ADMIN DASHBOARD ══ -->
+<div id="scr-admin" class="screen hidden">
+  <div class="dash-header">
+    <h2>Admin Dashboard</h2>
+    <div class="dash-btns">
+      <button class="icon-btn" onclick="loadDash()">↻ Refresh</button>
+      <button class="icon-btn" onclick="exportCSV()">⬇ Export CSV</button>
+      <button class="icon-btn danger" onclick="clearData()">🗑 Clear All</button>
+      <button class="icon-btn" onclick="show('scr-register')">← Exit</button>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="lbl">Participants</div><div class="val" id="d-n">0</div></div>
+    <div class="kpi"><div class="lbl">Avg Score</div><div class="val" id="d-avg">—</div></div>
+    <div class="kpi"><div class="lbl">Top Score</div><div class="val" id="d-top">—</div></div>
+  </div>
+
+  <div class="section-label">Score Distribution</div>
+  <div class="band-row">
+    <div class="band-top"><span class="band-name">🏆 Distinction — 80% and above</span><span class="band-pct" id="b-a-t" style="color:var(--green)">0 (0%)</span></div>
+    <div class="bar-track"><div class="bar-fill" id="b-a-f" style="width:0%;background:var(--green)"></div></div>
+  </div>
+  <div class="band-row">
+    <div class="band-top"><span class="band-name">✅ Pass — 60% to 79%</span><span class="band-pct" id="b-b-t" style="color:#7eb4fa">0 (0%)</span></div>
+    <div class="bar-track"><div class="bar-fill" id="b-b-f" style="width:0%;background:var(--accent)"></div></div>
+  </div>
+  <div class="band-row">
+    <div class="band-top"><span class="band-name">⚠️ Average — 40% to 59%</span><span class="band-pct" id="b-c-t" style="color:var(--gold)">0 (0%)</span></div>
+    <div class="bar-track"><div class="bar-fill" id="b-c-f" style="width:0%;background:var(--gold)"></div></div>
+  </div>
+  <div class="band-row">
+    <div class="band-top"><span class="band-name">❌ Below Average — below 40%</span><span class="band-pct" id="b-d-t" style="color:var(--red)">0 (0%)</span></div>
+    <div class="bar-track"><div class="bar-fill" id="b-d-f" style="width:0%;background:var(--red)"></div></div>
+  </div>
+
+  <div class="section-label" style="margin-top:1.5rem">All Participants</div>
+  <div id="no-data" class="no-data">No participants yet.</div>
+  <div class="p-table-wrap hidden" id="tbl-wrap">
+    <table class="ptable">
+      <thead><tr><th>#</th><th>Name</th><th>Designation</th><th>District</th><th>Score</th><th>Correct</th><th>Time</th><th>Submitted</th></tr></thead>
+      <tbody id="p-body"></tbody>
+    </table>
+  </div>
 </div>
 
 <script>
+// ── CONFIG ──
+const ADMIN_HASH = "adf31a54f8249d38ac5a343ae6f5940fa9a981433f93037f606ddce0c9283cbc";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzOAytrJuMkBdRN_pbaNOz00-g8ctcyphRrAxjkTjjWHdAC2ODQxo55W1ZYmXSz34Lf/exec"; // optional — for external backup
 const TOTAL = 25;
-const ADMIN_HASH="adf31a54f8249d38ac5a343ae6f5940fa9a981433f93037f606ddce0c9283cbc";
-const KEY="sbm_data";
+const L = ["a","b","c","d"];
+const SK = "sbmg_quiz_results_v1";
 
 const Q = [
-{id:1,q:"Core components of WASH?",o:["ODF only","Water, Sanitation, Hygiene","Only sanitation","Only water"],a:1},
-{id:2,q:"ODF Plus includes?",o:["Only toilets","SLWM + cleanliness","Only water","None"],a:1},
-{id:3,q:"Correct sequence?",o:["Aspiring → Rising → Model","Model → Rising","Random","None"],a:0},
-{id:4,q:"Har Ghar Jal relation?",o:["Same","Independent","Mandatory","None"],a:1},
-{id:5,q:"Twin pit is?",o:["Greywater","Blackwater system","Solid waste","None"],a:1},
-{id:6,q:"EoDT location?",o:["Start of drain","End of drain","Anywhere","None"],a:1},
-{id:7,q:"Foothill EoDT?",o:["Yes","No","Always yes","None"],a:1},
-{id:8,q:"EoDT in schools?",o:["Yes","No","Only big schools","None"],a:0},
-{id:9,q:"Waste segregation?",o:["2","3","4","Optional"],a:1},
-{id:10,q:"Dry waste bin?",o:["Green","Blue","Red","Black"],a:1},
-{id:11,q:"Why segregation?",o:["Reduce waste","Avoid contamination","Increase cost","None"],a:1},
-{id:12,q:"Plastic reuse?",o:["Roads","Bricks","Both","None"],a:2},
-{id:13,q:"Cleaning before shredding?",o:["Rust","Remove dirt","Color","None"],a:1},
-{id:14,q:"PWMU electrification?",o:["SBM","15th FC","MGNREGA","Both"],a:1},
-{id:15,q:"Geo tagging?",o:["GPS","Photo","Time","All"],a:3},
-{id:16,q:"Typology sign?",o:["EE","BDO","GP","Both"],a:1},
-{id:17,q:"O&M funding?",o:["SBM","15th FC","MGNREGA","Both"],a:1},
-{id:18,q:"User fee?",o:["5-10","20-30","50-100","100+"],a:1},
-{id:19,q:"Grievance?",o:["GP→Block→District","GPWSC→BWSC→DWSC","Both","None"],a:1},
-{id:20,q:"Vermiwash tank?",o:["Soak pit","Fertilizer liquid","Plastic treatment","None"],a:1},
-{id:21,q:"Tank position?",o:["Above","Below","Side","None"],a:1},
-{id:22,q:"District Coordinator?",o:["Construct","Supervise","Report","Both"],a:1},
-{id:23,q:"Swa Jal Mitra?",o:["Construct","Monitor","Meeting","Both"],a:1},
-{id:24,q:"FTK samples?",o:["50","80","100","150"],a:2},
-{id:25,q:"FTK parameters?",o:["7","8","9","10"],a:2}
+{id:1,q:'Which of the following are the core components of the WASH framework?',o:["a) ODF status, solid waste management, and liquid waste management", "b) Personal hygiene, food safety, and water quality testing", "c) Safe drinking water, sanitation, and hygiene", "d) Both (a) and (c) — ODF and WASH frameworks overlap completely"],a:2,h:'Water, Sanitation, and Hygiene (WASH) are the three core JMP components tracked under SDG 6. (a) uses SBM-G language that sounds credible but is not the WASH definition. (d) is a trap — ODF is a subset of sanitation, not equivalent to the full WASH framework.'},
+{id:2,q:'Which of the following are components of ODF Plus Model criteria under SBM-G Phase II?\n(i) ODF status maintained\n(ii) Solid and liquid waste managed at GP level\n(iii) 100% Aadhaar seeding of all household members\n(iv) Visual cleanliness — no litter, stagnant water, or plastic dumps in public places',o:["a) (i), (ii), and (iv) only", "b) (i) and (ii) only", "c) All of the above", "d) None of the above — these are SBM Phase I standards, not Phase II"],a:0,h:'(i), (ii), and (iv) are the three ODF Plus Model criteria. (iii) Aadhaar seeding is a DBT requirement, not an ODF Plus criterion. (c) and (d) are traps.'},
+{id:3,q:'What is the correct sequence for ODF Plus village declaration?',o:["a) ODF Plus Aspiring → ODF Plus Model → ODF Plus Rising", "b) ODF Plus Rising → ODF Plus Aspiring → ODF Plus Model", "c) ODF Plus Aspiring → ODF Plus Rising → ODF Plus Model", "d) All three can be declared simultaneously if SLWM is complete"],a:2,h:'Aspiring → Rising → Model is the correct sequence. Simultaneous declaration is not permitted under SBM-G guidelines. (d) is a trap.'},
+{id:4,q:'Which correctly describes the relationship between ODF Plus Model status and Har Ghar Jal coverage under JJM?',o:["a) ODF Plus Model automatically means the village has Har Ghar Jal — verified together on IMIS", "b) Har Ghar Jal is a precondition for ODF Plus Model — a village cannot be declared Model without tap connections", "c) They are assessed independently — a village can achieve one without the other, but convergence is the ideal outcome", "d) Both (a) and (b) — jointly declared by the District Collector"],a:2,h:'ODF Plus Model and Har Ghar Jal are assessed under two different schemes — SBM-G and JJM respectively. Convergence is encouraged but neither is a precondition for the other. (a), (b), and (d) are all wrong.'},
+{id:5,q:'A twin pit toilet is correctly described as which of the following?',o:["a) A greywater management system for kitchen and bathroom wastewater", "b) An on-site system with two alternating pits for safe management of black water", "c) A centralised faecal sludge treatment facility for multiple households", "d) Both (a) and (b) — twin pit toilets manage both grey and black water"],a:1,h:'Twin pit toilets have two alternating pits for black water (faecal waste) only. When Pit 1 fills it is sealed; Pit 2 is used while Pit 1 safely decomposes. (a) describes a soak pit. (d) is a trap.'},
+{id:6,q:'Where should an End-of-Drainage Treatment (EoDT) system be constructed?',o:["a) At every household that generates greywater from cooking and bathing", "b) Wherever there is no existing drain network in the village", "c) At the termination points of drain lines — before water reaches wetlands, rivers, ponds, or crop fields", "d) Both (a) and (b) — EoDT systems replace soak pits where drains are absent"],a:2,h:'EoDT systems are constructed at the end of drainage lines to treat wastewater before it reaches natural water bodies or crop fields. (b) is a trap — absence of drains is not the trigger; the endpoint of drains is.'},
+{id:7,q:'A GP has a drain termination point at the base of a foothill where water flows down with significant force. Should an EoDT system be constructed there?',o:["a) Yes — all drain termination points must have an EoDT system as per SBM-G norms", "b) Yes — EoDT at foothills helps recharge groundwater through percolation", "c) No — at foothill termination points with strong water flow, EoDT can cause blockage or flooding and should not be constructed", "d) Both (a) and (b) — EoDT is mandatory regardless of terrain or flow conditions"],a:2,h:'EoDT should NOT be constructed at foothill termination points with high-velocity water flow — it can cause blockage or flooding. Site assessment is essential before construction. (d) is a trap.'},
+{id:8,q:'Is the construction of an EoDT in an educational institution beneficial?',o:["a) Yes — educational institutions generate greywater from handwashing and cleaning that needs treatment", "b) No — EoDT is only for community-level drain termination points, not individual institutions", "c) Yes, but only if the institution has more than 100 students", "d) Both (a) and (b) — it depends on the state government's discretion"],a:0,h:'Yes — educational institutions like schools and anganwadis generate greywater from handwashing stations and cleaning activities. An EoDT system at the institution\'s drain outlet appropriately treats this before discharge to natural water bodies. (b) is a trap — EoDT is applicable wherever drains terminate.'},
+{id:9,q:'Under SBM-G, household waste should be segregated at source into how many primary categories?',o:["a) Two — wet (biodegradable) and dry (non-biodegradable)", "b) Three — wet, dry, and hazardous/sanitary", "c) Four — wet, dry, hazardous, and e-waste", "d) None — segregation at source is optional under SBM-G Phase II"],a:1,h:'SBM-G Phase II mandates three-category segregation: wet/biodegradable, dry/non-biodegradable, and hazardous/sanitary. (a) is the old Phase I approach. (d) is wrong — source segregation is mandatory.'},
+{id:10,q:'As per the O&M Policy of SBM-G Assets, what colour bins are used for dry/non-biodegradable waste in public areas?',o:["a) Green bin", "b) Blue bin", "c) Black bin", "d) Red bin"],a:1,h:'Green bins = biodegradable waste; Blue bins = non-biodegradable/dry waste. These are placed at markets, schools, Anganwadi Centres, and religious sites as per the O&M Policy.'},
+{id:11,q:'Why is segregation at source more effective than segregation at the MCF?',o:["a) It reduces the total volume of waste generated in the village", "b) Wet waste contaminates dry recyclables when mixed, reducing their market value", "c) Source segregation allows the MCF to compost all waste together", "d) Both (a) and (c)"],a:1,h:'When wet and dry waste mix, moisture and organic contamination makes dry recyclables difficult to process and lowers their market value. (a) is wrong — segregation does not reduce volume. (d) is a trap.'},
+{id:12,q:'As per the O&M Policy of SBM-G Assets, processed plastic from PWMUs can be channelled into which productive end uses?',o:["a) Road construction using plastic-bitumen blends", "b) Manufacturing of paver blocks and bricks", "c) Composting with organic waste in CCPs", "d) Both (a) and (b) — road construction and paver blocks are both valid end uses"],a:3,h:'(d) is correct — road construction using plastic-bitumen blends AND manufacturing of paver blocks and bricks are both listed in the O&M Policy as valid end uses. (c) is wrong — plastic cannot be composted.'},
+{id:13,q:'At a PWMU, the correct sequence is Segregation → Cleaning → Shredding → Sale/Baling. Which best explains why Cleaning comes before Shredding?',o:["a) Cleaning removes moisture so the shredder machine does not rust", "b) Non-recyclable plastics are washed in a drum to remove contaminants, ensuring cleaner shredded output for road construction or brick manufacturing", "c) Cleaning separates plastic by colour for higher sale price", "d) Both (a) and (c) — rust prevention and colour separation are both reasons"],a:1,h:'As per the O&M Policy: non-recyclable plastics are washed in a drum to remove contaminants before shredding. This ensures the shredded output is cleaner and suitable for road construction or brick manufacturing. (a) and (c) are invented distractors.'},
+{id:14,q:'As per the O&M Policy of SBM-G Assets, the external electrification of the PWMU for running machinery is funded from which source?',o:["a) SBM-G funds — the same source that funds the shed and machinery", "b) 15th Finance Commission Tied Grants of the Anchalik Panchayat", "c) MGNREGS convergence funds for rural infrastructure", "d) Both (a) and (b) — shed, machinery, and electrification all come from SBM-G"],a:1,h:'PWMU shed and machinery = SBM-G funded. External electrification = 15th FC Tied Grants of the Anchalik Panchayat. (a) and (d) are traps that conflate the two funding sources.'},
+{id:15,q:'For IHHL geo-tagging on IMIS, which are mandatory?\n(i) GPS coordinates of the toilet\n(ii) Photo of beneficiary with the completed toilet\n(iii) Aadhaar number as a geo-tag field\n(iv) Date and time stamp',o:["a) (i), (ii), and (iv) only", "b) All of the above", "c) (i) and (ii) only", "d) Two of the above — (i) and (iii)"],a:0,h:'(i), (ii), and (iv) are mandatory geo-tag fields on IMIS. (iii) Aadhaar is used for DBT bank linkage, not as a geo-tag field. \'All of the above\' in (b) is the classic trap.'},
+{id:16,q:'Who is authorised to sign Toilet Typology Certificates for IHHLs under SBM-G?',o:["a) Executive Engineer (EE) of the PHE Division", "b) Block Development Officer (BDO)", "c) Gram Panchayat Secretary", "d) Both (a) and (b) — either the EE or BDO can sign depending on state policy"],a:1,h:'Toilet Typology Certificates are signed by the Block Development Officer (BDO). EEs are involved in IMIS verification and fund release, not typology certification. (d) is a trap.'},
+{id:17,q:'As per the O&M Policy of SBM-G Assets, which fund covers initial O&M expenses of SWM assets at GP level for the first year?',o:["a) SBM-G General Fund — the same source used for asset construction", "b) 15th Finance Commission Tied Grants for sanitation", "c) MGNREGS convergence funds for labour-related maintenance", "d) Both (a) and (b) — SBM-G and 15th FC jointly fund first-year O&M"],a:1,h:'15th FC Tied Grants fund first-year O&M. SBM-G funds construction, not O&M. From Year 2, user fees, compost sales, and recyclables sustain operations. (d) is a trap.'},
+{id:18,q:'As per the O&M Policy of SBM-G Assets, what is the recommended monthly user fee from households for SWM services?',o:["a) ₹5–10 per household per month", "b) ₹20–30 per household per month", "c) ₹50–100 per household per month", "d) ₹100–200 per household per month"],a:1,h:'₹20–30 per household per month for SWM. ₹50–100 applies to commercial establishments/institutions, not households. The trap is (c) which is the commercial rate.'},
+{id:19,q:'As per the O&M Policy of SBM-G Assets, what is the correct three-tier grievance redressal structure?',o:["a) GP level → Block level → District level", "b) GPWSC level → BWSC level → DWSC level", "c) Household level → GPWSC level → Block level", "d) Both (a) and (b) — they describe the same three tiers"],a:1,h:'GPWSC Level → BWSC Level → DWSC Level as per the O&M Policy grievance diagram. (d) is a trap — (a) and (b) differ in their specific committee designations.'},
+{id:20,q:'In a vermicomposting CCP, what is the purpose of the external Vermiwash/Leachate tank connected to discharge pipes from the composting pits?',o:["a) It is a soak pit that absorbs excess water leaching from the compost pits", "b) It collects Vermiwash — the liquid leachate from vermicomposting that is rich in nutrients and used as liquid fertiliser", "c) It is a leachate treatment pit that neutralises toxic chemicals from decomposing plastic waste", "d) Both (a) and (c) — the tank absorbs leachate and treats it before ground discharge"],a:1,h:'The Vermiwash tank collects nutrient-rich liquid draining from vermicomposting pits. This vermiwash is used as liquid fertiliser. It is NOT a soak pit or leachate treatment system. (a) and (c) are deliberate traps.'},
+{id:21,q:'What should be the exact position of the Vermiwash/Leachate tank in a Community Compost Pit?',o:["a) 30 cm above the ground level", "b) 30 cm above the plinth level", "c) 30 cm below the ground level", "d) 60 cm below the plinth level"],a:2,h:'The Vermiwash tank is positioned 30 cm below the ground level so that leachate drains naturally by gravity from the composting pits into the tank. (a) and (b) are wrong — the tank must be below ground for gravity flow. (d) is a trap with an incorrect depth.'},
+{id:22,q:'What is the role of a District Coordinator with respect to Block WASH Coordinators (BWCs) under SBM-G?',o:["a) District Coordinators directly construct IHHLs alongside BWCs during field visits", "b) District Coordinators supervise the BWCs and are responsible for their performance", "c) District Coordinators only review the annual reports submitted by BWCs", "d) Both (b) and (c) — supervision includes annual report review"],a:1,h:'District Coordinators supervise BWCs — overseeing field activities and performance. (c) is a trap — the role is active supervision, not just annual report review. (d) combines correct with incorrect.'},
+{id:23,q:'Under the Swa-Jal Mitra proposal, what is their primary role with respect to SBM-G activities?',o:["a) Constructing IHHLs in BPL households that cannot arrange their own labour", "b) Verification of online IHHL applications, DBT monitoring, and monitoring O&M of SWM assets", "c) Conducting Gram Sabha meetings on sanitation and submitting minutes to the BDO", "d) Both (a) and (b) — Swa-Jal Mitras construct and monitor IHHLs"],a:1,h:'Swa-Jal Mitras\' SBM-G roles: verification of online IHHL applications, DBT monitoring app updation, and monitoring O&M of SWM assets in GPs. They do not construct IHHLs. (d) is a trap.'},
+{id:24,q:'How many water samples can be tested with the help of one FTK (Field Test Kit)?',o:["a) 50", "b) 80", "c) 100", "d) 150"],a:2,h:'One FTK (Field Test Kit) can test 100 water samples. FTKs are used by Swa-Jal Mitras for water quality testing at the household/GP level under JJM.'},
+{id:25,q:'How many parameters can be tested using an FTK (Field Test Kit)?',o:["a) 10", "b) 7", "c) 9", "d) 12"],a:2,h:'An FTK tests 9 parameters. FTKs are used by Swa-Jal Mitras for water quality testing at the household/GP level under JJM. (b) 7 is a common wrong answer — the correct number is 9.'}
 ];
 
-let cur=0,ANS={},timer=1200,interval;
+// ── STATE ──
+let P = {}, ANS = {}, curQ = 0, startTime = null, timer = null, secs = 1200, done = false;
 
-// START
-function start(){
-const name=document.getElementById("name").value;
-if(!name){alert("Enter name");return;}
-show("quiz");
-load();
-startTimer();
+// ── SCREEN ──
+function show(id) {
+  ["scr-register","scr-adminlogin","scr-quiz","scr-result","scr-admin"]
+    .forEach(s => document.getElementById(s).classList.toggle("hidden", s !== id));
+  window.scrollTo(0,0);
+}
+function $(id){ return document.getElementById(id); }
+
+function showAdminLogin(){ show("scr-adminlogin"); $("adm-pw").value=""; $("adm-err").style.display="none"; }
+
+// ── SHA256 hash helper ──
+async function sha256(msg){
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(msg));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
 }
 
-// UI SWITCH
-function show(id){
-["register","quiz","result","admin"].forEach(x=>document.getElementById(x).classList.add("hidden"));
-document.getElementById(id).classList.remove("hidden");
+async function adminLogin(){
+  const h = await sha256($("adm-pw").value);
+  if(h === ADMIN_HASH){
+    $("adm-pw").value=""; $("adm-err").style.display="none";
+    show("scr-admin"); loadDash();
+  } else {
+    $("adm-err").style.display="block";
+  }
 }
 
-// LOAD QUESTION
-function load(){
-let q=Q[cur];
-document.getElementById("question").innerText=q.q;
-document.getElementById("progress").innerText=`Q ${cur+1}/${TOTAL}`;
-let html="";
-q.o.forEach((opt,i)=>{
-let cls="opt";
-if(ANS[cur]===i) cls+=" selected";
-html+=`<div class="${cls}" onclick="pick(${i})">${opt}</div>`;
-});
-document.getElementById("options").innerHTML=html;
+// ── REGISTER ──
+function startQuiz(){
+    const name=$("r-name").value.trim();
+  if(!name){ $("reg-err").style.display="block"; return; }
+  $("reg-err").style.display="none";
+  P={name, desig:"", district:"", mobile:""};
+  ANS={}; curQ=0; done=false; startTime=Date.now();
+  $("quiz-who").textContent=name;
+  show("scr-quiz"); renderQ(); startTimer();
 }
 
-// PICK
-function pick(i){
-ANS[cur]=i;
-load();
-}
-
-// NAV
-function next(){
-if(cur<TOTAL-1){cur++;load();}
-else finish();
-}
-function prev(){
-if(cur>0){cur--;load();}
-}
-
-// TIMER
+// ── TIMER ──
 function startTimer(){
-interval=setInterval(()=>{
-timer--;
-let m=Math.floor(timer/60),s=timer%60;
-document.getElementById("timer").innerText=`${m}:${s<10?"0":""}${s}`;
-if(timer<=0){clearInterval(interval);finish();}
-},1000);
+  secs=1200;
+  if(timer) clearInterval(timer);
+  timer=setInterval(()=>{
+    secs--;
+    const m=Math.floor(secs/60), s=secs%60;
+    const el=$("timer");
+    el.textContent="⏱ "+String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+    if(secs<=300) el.style.color="var(--red)";
+    if(secs<=0){ clearInterval(timer); if(!done){done=true;processSubmit();} }
+  },1000);
 }
 
-// FINISH
-function finish(){
-clearInterval(interval);
-let correct=0;
-Q.forEach((q,i)=>{if(ANS[i]===q.a)correct++;});
-let pct=Math.round((correct/TOTAL)*100);
-
-show("result");
-document.getElementById("score").innerText=`Score: ${correct}/${TOTAL} (${pct}%)`;
-
-save(correct,pct);
+// ── RENDER QUESTION ──
+function renderQ(){
+  const q=Q[curQ];
+  const hasTrap=q.o.some(o=>/(all of the above|none of the above|two of the above|both \()/i.test(o));
+  const chosen=ANS[q.id]; const rev=chosen!==undefined;
+  $("q-area").innerHTML=`<div class="qcard fadein">
+    <div class="qmeta">
+      <span class="qno">Q${curQ+1} of ${TOTAL}</span>
+      ${hasTrap?'<span class="trap-tag">⚠ Tricky options</span>':""}
+    </div>
+    <div class="qtext">${q.q}</div>
+    <div class="opts">
+      ${q.o.map((opt,i)=>{
+        let cls="opt"+(done?" locked":"");
+        if(rev){ if(i===ANS[q.id]) cls+=" selected"; }
+        return `<div class="${cls}" onclick="pick(${q.id},${i})"><div class="letter">${L[i]}</div><div class="opt-text">${opt}</div></div>`;
+      }).join("")}
+    </div>
+  </div>`;
+  const pct=Math.round(((curQ+1)/TOTAL)*100);
+  $("prog-fill").style.width=pct+"%"; $("prog-lbl").textContent="Question "+(curQ+1)+" of "+TOTAL; $("prog-pct").textContent=pct+"%";
+  const answeredCount = Object.keys(ANS).length;
+  $("ans-cnt").textContent=answeredCount;
+  const remaining = TOTAL - answeredCount;
+  $("unanswered-note").textContent = remaining > 0 ? remaining+" remaining" : "All answered ✓";
+  $("unanswered-note").style.color = remaining > 0 ? "var(--gold)" : "var(--green)";
+  $("btn-prev").disabled=curQ===0;
+  const isLast=curQ===TOTAL-1;
+  $("btn-next").classList.toggle("hidden",isLast); $("btn-sub").classList.toggle("hidden",!isLast);
 }
 
-// STORAGE
-function save(score,pct){
-let d=JSON.parse(localStorage.getItem(KEY)||"[]");
-d.push({score,pct,time:new Date().toLocaleString()});
-localStorage.setItem(KEY,JSON.stringify(d));
+function pick(qid,idx){
+  if(done) return;
+  ANS[qid]=idx;
+  renderQ();
+  // auto-advance after 600ms, but only if not last question
+  if(curQ < TOTAL-1){
+    setTimeout(()=>{
+      // only advance if same answer still selected (user didn't change)
+      if(ANS[qid]===idx){ curQ++; renderQ(); }
+    },600);
+  }
+}
+function go(d){ curQ=Math.max(0,Math.min(TOTAL-1,curQ+d)); renderQ(); }
+
+// ── SUBMIT ──
+function confirmSub(){
+  const blank=TOTAL-Object.keys(ANS).length;
+  if(blank>0&&!confirm(`${blank} question(s) unanswered — will be marked incorrect.\n\nSubmit now?`)) return;
+  if(done)return; done=true; clearInterval(timer); processSubmit();
 }
 
-// ADMIN
-async function login(){
-let pw=prompt("Password");
-let h=await sha(pw);
-if(h===ADMIN_HASH){show("admin");loadData();}
-else alert("Wrong");
+function processSubmit(){
+  const elapsed=Math.round((Date.now()-startTime)/1000);
+  const timeStr=Math.floor(elapsed/60)+"m "+(elapsed%60)+"s";
+  let correct=0;
+  Q.forEach(q=>{ if(ANS[q.id]===q.a)correct++; });
+  const pct=Math.round((correct/TOTAL)*100);
+  const blank=TOTAL-Object.keys(ANS).length;
+  const wrong=TOTAL-correct-blank;
+  show("scr-result");
+  let emoji,title,color;
+  if(pct>=80){emoji="🏆";title="Distinction!";color="var(--green)";}
+  else if(pct>=60){emoji="✅";title="Pass";color="var(--accent)";}
+  else if(pct>=40){emoji="⚠️";title="Average";color="var(--gold)";}
+  else{emoji="📚";title="Needs Improvement";color="var(--red)";}
+  $("r-emoji").textContent=emoji; $("r-title").textContent=title;
+  $("r-pct").style.color=color; $("r-pct").textContent=pct+"%";
+  $("r-sub").textContent=correct+" correct out of "+TOTAL+" questions";
+  $("r-cor").textContent=correct; $("r-wrg").textContent=wrong; $("r-blk").textContent=blank; $("r-tim").textContent=timeStr;
+  const result={...P, correct, wrong, blank, pct, time:timeStr, ts:new Date().toLocaleString("en-IN",{timeZone:"Asia/Kolkata"})};
+  saveLocal(result);
+  sendToSheet(result);
 }
 
-async function sha(msg){
-const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(msg));
-return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
+// ── LOCAL STORAGE ──
+function getResults(){ try{ return JSON.parse(localStorage.getItem(SK)||"[]"); }catch(e){return[];} }
+function saveLocal(r){ try{ const a=getResults(); a.push(r); localStorage.setItem(SK,JSON.stringify(a)); $("save-note").textContent="✅ Result saved."; $("save-note").style.color="var(--green)"; }catch(e){ $("save-note").textContent="⚠️ Could not save result."; } }
+
+// ── EXTERNAL SHEET (optional) ──
+async function sendToSheet(data){
+  if(!SCRIPT_URL||SCRIPT_URL==="PASTE_YOUR_APPS_SCRIPT_URL_HERE") return;
+  try{ await fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)}); }catch(e){}
 }
 
-function loadData(){
-let d=JSON.parse(localStorage.getItem(KEY)||"[]");
-document.getElementById("data").innerHTML=d.map(x=>`<p>${x.score} (${x.pct}%) - ${x.time}</p>`).join("");
+// ── REVIEW ──
+function toggleReview(){
+  const a=$("rev-area"); const btn=$("rev-btn");
+  if(!a.classList.contains("hidden")){ a.classList.add("hidden"); btn.textContent="📋 Review All Answers"; return; }
+  btn.textContent="Hide Review";
+  a.classList.remove("hidden");
+  a.innerHTML=Q.map(q=>{
+    const chosen=ANS[q.id]; const ok=chosen===q.a;
+    return `<div class="review-item">
+      <div style="display:flex;justify-content:space-between;margin-bottom:.6rem;flex-wrap:wrap;gap:.3rem">
+        <span style="font-size:11px;color:var(--muted)">Q${q.id}</span>
+        <span style="font-size:12px;font-weight:600;color:${ok?"var(--green)":chosen===undefined?"var(--muted)":"var(--red)"}">${ok?"✓ Correct":chosen===undefined?"— Not attempted":"✗ Incorrect"}</span>
+      </div>
+      <div style="font-family:'DM Serif Display',serif;font-size:14px;color:#fff;margin-bottom:.75rem;white-space:pre-line">${q.q}</div>
+      ${q.o.map((opt,j)=>{
+        let bg="var(--surface2)",bc="var(--border)",tc="var(--text)";
+        if(j===q.a){bg="var(--green-bg)";bc="var(--green-bd)";tc="var(--green)";}
+        else if(j===chosen&&chosen!==q.a){bg="var(--red-bg)";bc="var(--red-bd)";tc="var(--red)";}
+        return `<div style="padding:.5rem .75rem;border-radius:8px;border:1px solid ${bc};background:${bg};margin-bottom:.3rem;font-size:12.5px;color:${tc}">${opt}</div>`;
+      }).join("")}
+      <div style="margin-top:.6rem;padding:.6rem .75rem;background:rgba(91,141,238,.06);border:1px solid rgba(91,141,238,.18);border-radius:8px;font-size:11.5px;color:#9aaac8;line-height:1.55"><strong style="color:var(--accent)">Why:</strong> ${q.h}</div>
+    </div>`;
+  }).join("");
 }
 
-function clearData(){localStorage.removeItem(KEY);loadData();}
+// ── DASHBOARD ──
+function loadDash(){
+  const results=getResults();
+  const n=results.length;
+  $("d-n").textContent=n;
+  $("no-data").style.display=n===0?"block":"none";
+  $("tbl-wrap").classList.toggle("hidden",n===0);
+  if(n===0){ $("d-avg").textContent="—"; $("d-top").textContent="—"; ["a","b","c","d"].forEach(k=>{ $("b-"+k+"-t").textContent="0 (0%)"; $("b-"+k+"-f").style.width="0%"; }); return; }
+  const avg=Math.round(results.reduce((s,r)=>s+r.pct,0)/n);
+  const top=Math.max(...results.map(r=>r.pct));
+  $("d-avg").textContent=avg+"%"; $("d-top").textContent=top+"%";
+  const bands={a:0,b:0,c:0,d:0};
+  results.forEach(r=>{ if(r.pct>=80)bands.a++; else if(r.pct>=60)bands.b++; else if(r.pct>=40)bands.c++; else bands.d++; });
+  ["a","b","c","d"].forEach(k=>{
+    const cnt=bands[k], pct=Math.round((cnt/n)*100);
+    $("b-"+k+"-t").textContent=cnt+" ("+pct+"%)";
+    $("b-"+k+"-f").style.width=pct+"%";
+  });
+  const tbody=$("p-body");
+  tbody.innerHTML=results.slice().reverse().map((r,i)=>{
+    const cls=r.pct>=80?"s-a":r.pct>=60?"s-b":r.pct>=40?"s-c":"s-d";
+    return `<tr><td style="color:var(--muted)">${n-i}</td><td>${r.name}</td><td style="color:var(--muted)">${r.desig}</td><td style="color:var(--muted)">${r.district}</td><td><span class="sbadge ${cls}">${r.pct}%</span></td><td>${r.correct}/50</td><td style="color:var(--muted)">${r.time}</td><td style="color:var(--muted);font-size:11px">${r.ts||""}</td></tr>`;
+  }).join("");
+}
+
+function clearData(){
+  if(!confirm("Clear ALL participant data from this device? This cannot be undone.")) return;
+  localStorage.removeItem(SK); loadDash();
+}
 
 function exportCSV(){
-let d=JSON.parse(localStorage.getItem(KEY)||"[]");
-let csv="Score,Percent,Time\n";
-d.forEach(x=>csv+=`${x.score},${x.pct},${x.time}\n`);
-let a=document.createElement("a");
-a.href="data:text/csv,"+encodeURIComponent(csv);
-a.download="results.csv";
-a.click();
+  const results=getResults();
+  if(!results.length){ alert("No data to export."); return; }
+  const hdr=["Name","Designation","District","Mobile","Score (%)","Correct","Wrong","Not Answered","Time","Submitted"];
+  const rows=results.map(r=>[r.name,r.desig,r.district,r.mobile||"",r.pct+"%",r.correct,r.wrong,r.blank,r.time,r.ts||""].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(","));
+  const csv=[hdr.join(","),...rows].join("\n");
+  const a=document.createElement("a");
+  a.href="data:text/csv;charset=utf-8,"+encodeURIComponent(csv);
+  a.download="SBM_G_Assessment_Results.csv";
+  a.click();
 }
 </script>
-
 </body>
 </html>
